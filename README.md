@@ -82,7 +82,7 @@ Promise.all() 是干什么用的，怎么用？
 
 * 初始化Promise对象的方法
 new Promise(fn)
-Promise.resolve(fn)
+Promise.resolve(fn)  
 
 ```
 /*
