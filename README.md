@@ -50,8 +50,109 @@ let 请求结果5 = 请求3(请求结果4);
 
 * Promise 的业界实现都有哪些？
 业界著名的 Q 和 bluebird，bluebird 甚至号称运行最快的类库
-3、Promise 解决的痛点还有其他方法可以解决吗？如果有，请列举。
+
+* Promise 解决的痛点还有其他方法可以解决吗？如果有，请列举。
+为了解决“回调地狱”，我们可以使用文中所述的这五种常用方法：
+1、function拆解
+回调嵌套所带来的一个重要问题就是代码不易阅读与维护。因为普遍来说，过多的缩进（嵌套）会极大的影响代码的可读性。基于这一点，
+可以进行一个最简单的优化——将各步拆解为单个的function
+2、事件发布/订阅模式
+我们可以监听某一事件，当事件发生时，进行相应回调操作；另一方面，当某些操作完成后，通过发布事件触发回调。这样就可以将原本捆绑在一起的代码解耦。
+3、Promise
+4、Generator
+generator是es6中的一个新的语法。在function关键字后添加*即可将函数变为generator
+```
+const gen = function* () {
+    yield 1;
+    yield 2;
+    return 3;
+}
+
+let g = gen();
+g.next(); // { value: 1, done: false }
+g.next(); // { value: 2, done: false }
+g.next(); // { value: 3, done: true }
+g.next(); // { value: undefined, done: true }
+
+```
+generator函数有一个最大的特点，可以在内部执行的过程中交出程序的控制权，yield相当于起到了一个暂停的作用；而当一定情况下，外部又将控制权再移交回来
+5、async / await
+es7中的async/await
+在async函数中可以使用await语句。await后一般是一个Promise对象
+```
+async function foo () {
+    console.log('开始');
+    let res = await post(data);
+    console.log(`post已完成，结果为：${res}`);
+};
+```
 4、Promise 如何使用？
+```
+// 声明函数
+function run(callback) {
+    let parmas = 0;
+    if (callback) callback(parmas);
+};
+function fnStep1(callback) {
+    let parmas = 123;
+    if (callback) callback(parmas);
+};
+function fnStep2(callback) {
+    let parmas = 456;
+    if (callback) callback(parmas);
+};
+function fnStep3(callback) {
+    let parmas = 789;
+    if (callback) callback(parmas);
+};
+// fnStep4 ...
+
+// 传统使用回调的写法
+run(function (parmas) {
+    // parmas = 0
+    console.log(parmas);
+    fnStep1(function (parmas1) {
+        // parmas = 123
+        console.log(parmas1);
+        fnStep2(function (parmas2) {
+            // parmas = 456
+            console.log(parmas2);
+            fnStep3(function (parmas3) {
+                // ...
+                // 一直嵌套
+            });
+        });
+    });
+});
+
+
+let p = new Promise((resolve, reject) => {
+    const parmas = 0;
+    resolve(parmas); // fulfilled
+    //   reject("failure reason"); // rejected
+})
+
+p.then(
+    (parmas) => {
+        // parmas，resolve返回的值
+        console.log(parmas);  //0
+        return 123; //返回值给下一个then
+    }
+    )
+    .then(
+    (parmas) => {
+        // parmas，上一个then返回的值
+        console.log(parmas); //123
+        return 456; //返回值给下一个then
+    }
+    )
+    .then(
+    (parmas) => {
+        // parmas，上一个then返回的值
+        console.log(parmas);  //456
+        return 789; //返回值给下一个then
+    })
+```
 
 * Promise 常用的方法，方法的作用？
 1、race
@@ -60,8 +161,6 @@ let 请求结果5 = 请求3(请求结果4);
 多个promise 任务同时执行，返回所有promise 任务的执行结果；
 
 6、Promise 在事件循环中的执行过程是怎样的？
-8、能不能手写一个 Promise 的polyfill。
-Promise方法你最常用什么写法？
 
 * 构造函数传入的参数是什么类型？
 它接收的参数是一个匿名函数，任何情况下，它里面的js最先执行。
@@ -82,7 +181,7 @@ Promise.all() 是干什么用的，怎么用？
 
 * 初始化Promise对象的方法
 new Promise(fn)
-Promise.resolve(fn)  
+Promise.resolve(fn)
 
 ```
 /*

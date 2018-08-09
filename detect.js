@@ -1,6 +1,6 @@
 
-/*
-*1=>2=>4=>3
+/**
+* 1=>2=>4=>3
 * Promise 构造函数是同步执行的，promise.then 中的函数是异步执行的
 */
 const promise = new Promise((resolve,reject)=>{
@@ -13,16 +13,16 @@ promise.then(()=>{
 });
 console.log(4);
 
-/*
-*promise1 Promise { <pending> }
+/**
+* promise1 Promise { <pending> }
 * promise2 Promise { <pending> }
-*(node:10440) UnhandledPromiseRejectionWarning: Unhandled promise rejection (rejection id: 1): Error: error
+* (node:10440) UnhandledPromiseRejectionWarning: Unhandled promise rejection (rejection id: 1): Error: error
 * promise1 Promise { 'success' }
 * promise2 Promise {
 * <rejected> Error: error
-  * at promise1.then (E:\devilCode\promise\detect.js:31:11) }
+ * at promise1.then (E:\devilCode\promise\detect.js:31:11) }
 *
-*promise 有 3 种状态：pending、fulfilled 或 rejected。
+* promise 有 3 种状态：pending、fulfilled 或 rejected。
 * 状态改变只能是 pending->fulfilled 或者 pending->rejected，状态一旦改变则不能再变。
 * promise2 并不是 promise1，而是返回的一个新的 Promise 实例
  */
@@ -42,7 +42,7 @@ setTimeout(()=>{
     console.log('promise2',promise2);
 },2000);
 
-/*
+/**
 *then: success1
 *
 * 构造函数中的 resolve 或 reject 只有第一次执行有效，多次调用没有任何作用
@@ -61,7 +61,7 @@ threePromise.then((res)=>{
     console.log('catch',err);
 });
 
-/*
+/**
 * 1
 * 2
 *
@@ -78,7 +78,7 @@ Promise.resolve(1).then((res)=>{
     console.log(res);
 });
 
-/*
+/**
 * once
 * success 1000
 * success 1000
@@ -105,7 +105,7 @@ fivePromise.then((res)=>{
 });
 
 
-/*
+/**
 *then: Error: error
     at Promise.resolve.then (E:\devilCode\promise\detect.js:121:12)
     at process._tickCallback (internal/process/next_tick.js:109:7)
@@ -113,8 +113,6 @@ fivePromise.then((res)=>{
     at run (bootstrap_node.js:389:7)
     at startup (bootstrap_node.js:149:9)
     at bootstrap_node.js:504:3
-
-*
 *
 *.then 或者 .catch 中 return 一个 error 对象并不会抛出错误，所以不会被后续的 .catch 捕获
 *
@@ -130,7 +128,7 @@ Promise.resolve().then(()=>{
     console.log('catch:',err);
 });
 
-/*
+/**
 *TypeError: Chaining cycle detected for promise #<Promise>
     at resolvePromise (native)
     at process._tickCallback (internal/process/next_tick.js:109:7)
@@ -149,14 +147,14 @@ const sevenPromise = Promise.resolve()
 });
 sevenPromise.catch(console.error);
 
-/*
+/**
 * 1
 *
 * .then 或者 .catch 的参数期望是函数，传入非函数则会发生值穿透
  */
 Promise.resolve(1).then(2).then(Promise.resolve(3)).then(console.log);
 
-/*
+/**
 *fail2 Error: error
     at success (E:\devilCode\promise\detect.js:172:11)
     at process._tickCallback (internal/process/next_tick.js:109:7)
@@ -178,7 +176,7 @@ Promise.resolve().then(function success(res){
 console.error('fail2',e);
 });
 
-/*
+/**
 *end
 *nextTick
 *then
