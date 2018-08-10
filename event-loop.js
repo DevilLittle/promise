@@ -17,21 +17,21 @@
  * 结果：
  * promise1 =》 promise2 =》 global1 =》 then1 =》 timeout1
  */
-// setTimeout(function() {
-//     console.log('timeout1');
-// });
-//
-// new Promise(function(resolve) {
-//     console.log('promise1');
-//     for(let i = 0; i < 1000; i++) {
-//         i === 99 && resolve();
-//     }
-//     console.log('promise2');
-// }).then(function() {
-//     console.log('then1');
-// });
-//
-// console.log('global1');
+setTimeout(function() {
+    console.log('timeout1');
+});
+
+new Promise(function(resolve) {
+    console.log('promise1');
+    for(let i = 0; i < 1000; i++) {
+        i === 99 && resolve();
+    }
+    console.log('promise2');
+}).then(function() {
+    console.log('then1');
+});
+
+console.log('global1');
 
 /**
  * example two
@@ -72,29 +72,27 @@
  *                     微队列执行：process.nextTick微队列：timeout1_nextTick =》timeout2_nextTick
  *                                Promise微队列：timeout1_then =》timeout2_then
  *
- * //TODO
  * 循环结束，新一轮循环开始
  * setImmediate宏队列（两个任务都要执行，setImmediate1先执行，setImmediate2后执行）：
  * setImmediate（第一个）：执行immediate1
  *                      process.nextTick分发到process.nextTick相关微队列
- *                      Promise构造函数直接执行：timeout1_promise
+ *                      Promise构造函数直接执行：immediate1_promise
  *                      then分发到Promise相关微队列
- * setTimeout（第二个）：执行timeout2
+ * setImmediate（第二个）：执行immediate2
  *                      process.nextTick分发到process.nextTick相关微队列
- *                      Promise构造函数直接执行：timeout1_promise
- *                      then分发到Promise相关微队列（第一个）：执行timeout1
- *                      process.nextTick分发到process.nextTick相关微队列
- *                      Promise构造函数直接执行：timeout1_promise
- *                      then分发到Promise相关微队列
- *setTimeout（第二个）：执行timeout2
- *                      process.nextTick分发到process.nextTick相关微队列
- *                      Promise构造函数直接执行：timeout1_promise
+ *                      Promise构造函数直接执行：immediate2_promise
  *                      then分发到Promise相关微队列
  *setImmediate宏队列执行输出顺序：
- *                     函数调用栈输出：timeout1 =》timeout1_promise =》timeout2 =》timeout2_promise
- *                     微队列执行：process.nextTick微队列：timeout1_nextTick =》timeout2_nextTick
- *                                Promise微队列：timeout1_then =》timeout2_then
+ *                     函数调用栈输出：immediate1 =》immediate1_promise =》immediate2 =》immediate2_promise
+ *                     微队列执行：process.nextTick微队列：immediate1_nextTick =》immediate2_nextTick
+ *                                Promise微队列：immediate1_then =》immediate2_then
  *
+ * 循环完毕，执行完成
+ * 输出结果：
+ * golb1 =》glob1_promise =》glob2_promise =》glob1_nextTick =》glob2_nextTick =》glob1_then =》 glob2_then
+ * =》timeout1 =》timeout1_promise =》timeout2 =》timeout2_promise =》timeout1_nextTick =》timeout2_nextTick
+ * =》timeout1_then =》timeout2_then =》immediate1 =》immediate1_promise =》immediate2 =》immediate2_promise
+ * =》immediate1_nextTick =》immediate2_nextTick =》immediate1_then =》immediate2_then
  */
 
 console.log('golb1');
